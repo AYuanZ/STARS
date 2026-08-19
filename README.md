@@ -54,3 +54,16 @@ Scheduling and Resource Allocation
           |
           v
  Evaluation and Analysis
+```
+
+## Repository Structure
+
+```text
+STARS/
+├── configs/          # Example model, hardware, and scenario configurations
+└── src/              # STARS implementation
+    ├── profiling/    # Workload and GPU resource profiling
+    ├── modeling/     # Performance and interference modeling
+    ├── scheduler/    # SLO-aware scheduling and resource allocation
+    └── runtime/      # GPU sharing runtime and execution control
+```
