@@ -10,7 +10,7 @@ inference tasks.
 
 > **Release status:** This repository is currently under active preparation.
 > We are releasing the documentation and artifact structure first. Source code
-> and reproducibility tools will be released incrementally.
+> will be released incrementally.
 
 ## Overview
 
