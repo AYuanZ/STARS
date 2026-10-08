@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  *
- * Communication primitives for nvshare.
+ * Communication primitives for STARS.
  */
 
 /*
@@ -60,7 +60,7 @@ const char *message_type_string[] = {
 #define RAND_MAX_WIDTH IMAX_BITS(RAND_MAX)
 _Static_assert((RAND_MAX & (RAND_MAX + 1u)) == 0, "RAND_MAX not a Mersenne number");
 
-uint64_t nvshare_generate_id(void) {
+uint64_t stars_generate_id(void) {
 	uint64_t r = 0;
 	for (int i = 0; i < 64; i += RAND_MAX_WIDTH) {
 		r <<= RAND_MAX_WIDTH;
@@ -70,25 +70,25 @@ uint64_t nvshare_generate_id(void) {
 }
 
 
-/* Stores the path to the nvshare-scheduler socket in sock_path. */
-int nvshare_get_scheduler_path(char *sock_path)
+/* Stores the path to the STARS scheduler socket in sock_path. */
+int stars_get_scheduler_path(char *sock_path)
 {
 	int offset;
 	size_t ret;
 
 	/* TODO: Ensure it fits in sock_path, check return value */
-	ret = strlcpy(sock_path, NVSHARE_SOCK_DIR, NVSHARE_SOCK_PATH_MAX);
+	ret = strlcpy(sock_path, STARS_SOCK_DIR, STARS_SOCK_PATH_MAX);
 
 	offset = ret; /* Start from the trailing NULL byte */
 
 	/* TODO: Ensure it fits in sock_path, check return value */
-	ret = snprintf(sock_path + offset, NVSHARE_SOCK_PATH_MAX - offset,
+	ret = snprintf(sock_path + offset, STARS_SOCK_PATH_MAX - offset,
 			"%s", "scheduler.sock");
 	return 0;
 }
 
 
-static int nvshare_unix_bind(int *sock, const char *path, int socket_type)
+static int stars_unix_bind(int *sock, const char *path, int socket_type)
 {
 	int ret = 0;
 	struct sockaddr_un addr;
@@ -128,7 +128,7 @@ out:
 }
 
 
-static int nvshare_unix_connect(int *sock, const char *path, int socket_type)
+static int stars_unix_connect(int *sock, const char *path, int socket_type)
 {
 	int ret = 0;
 	struct sockaddr_un addr;
@@ -160,12 +160,12 @@ out:
 }
 
 
-int nvshare_bind_and_listen(int *lsock, const char *sock_path)
+int stars_bind_and_listen(int *lsock, const char *sock_path)
 {
 	int bklog = 32;
 	int ret = 0;
 
-	ret = nvshare_unix_bind(lsock, sock_path, SOCK_STREAM | SOCK_NONBLOCK);
+	ret = stars_unix_bind(lsock, sock_path, SOCK_STREAM | SOCK_NONBLOCK);
 	if (ret < 0) goto out;
 
 	ret = listen(*lsock, bklog);
@@ -182,13 +182,13 @@ out:
 }
 
 
-int nvshare_connect(int *rsock, const char *rpath)
+int stars_connect(int *rsock, const char *rpath)
 {
-	return RETRY_INTR(nvshare_unix_connect(rsock, rpath, SOCK_STREAM));
+	return RETRY_INTR(stars_unix_connect(rsock, rpath, SOCK_STREAM));
 }
 
 
-int nvshare_accept(int lsock, int *rsock)
+int stars_accept(int lsock, int *rsock)
 {
 	int sock;
 	sock = RETRY_INTR(accept4(lsock, NULL, NULL, SOCK_NONBLOCK));
@@ -204,14 +204,14 @@ int nvshare_accept(int lsock, int *rsock)
 
 
 /* Send a message on a non-blocking socket. */
-ssize_t nvshare_send_noblock(int rsock, const void *msg_p, size_t count)
+ssize_t stars_send_noblock(int rsock, const void *msg_p, size_t count)
 {
 	return RETRY_INTR(write(rsock, msg_p, count));
 }
 
 
 /* Receive a message from a non-blocking socket. */
-ssize_t nvshare_receive_noblock(int rsock, void *msg_p, size_t count)
+ssize_t stars_receive_noblock(int rsock, void *msg_p, size_t count)
 {
 	/* Clear the message buffer */
 	memset(msg_p, 0, count);
@@ -220,7 +220,7 @@ ssize_t nvshare_receive_noblock(int rsock, void *msg_p, size_t count)
 
 
 /* Receive a message from a blocking socket. */
-int nvshare_receive_block(int rsock, void *msg_p, size_t count)
+int stars_receive_block(int rsock, void *msg_p, size_t count)
 {
 	/* Clear the message buffer */
 	memset(msg_p, 0, count);

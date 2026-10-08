@@ -24,40 +24,40 @@ int is_log_file_open();
 
 #define log_fatal_errno(fmt, ...)                             \
 do {                                                          \
-	fprintf(stderr, "[NVSHARE][FATAL]: " fmt "\n", ##__VA_ARGS__); \
+	fprintf(stderr, "[STARS][FATAL]: " fmt "\n", ##__VA_ARGS__); \
 	fprintf(stderr, "errno = %s\n", strerror(errno));     \
 	exit(1);                                              \
 } while (0)
 
 #define log_fatal(fmt, ...)                                   \
 do {                                                          \
-	fprintf(stderr, "[NVSHARE][FATAL]: " fmt "\n", ##__VA_ARGS__); \
+	fprintf(stderr, "[STARS][FATAL]: " fmt "\n", ##__VA_ARGS__); \
 	exit(1);                                              \
 } while (0)
 
 #define log_info(fmt, ...)                      \
 do {                                              \
-	fprintf(stderr, "[NVSHARE][INFO]: " fmt "\n", ##__VA_ARGS__); \
+	fprintf(stderr, "[STARS][INFO]: " fmt "\n", ##__VA_ARGS__); \
 } while (0)
 
 #define log_warn(fmt, ...)                                   \
 do {                                                         \
-	fprintf(stderr, "[NVSHARE][WARN]: " fmt "\n", ##__VA_ARGS__); \
+	fprintf(stderr, "[STARS][WARN]: " fmt "\n", ##__VA_ARGS__); \
 } while (0)
 
 /* Source: https://stackoverflow.com/a/1644898 */
 #define log_debug(fmt, ...)                                                \
 do {                                                                       \
-	if (__debug) fprintf(stdout, "[NVSHARE][DEBUG]: " fmt "\n", ##__VA_ARGS__); \
+	if (__debug) fprintf(stdout, "[STARS][DEBUG]: " fmt "\n", ##__VA_ARGS__); \
 } while (0)
 
 #define log_save(fmt, ...)                                   \
 do {                                                         \
 	if (is_log_file_open()){                                 \
-		fprintf(log_file, "[NVSHARE][SAVE]: " fmt "\n", ##__VA_ARGS__); \
+		fprintf(log_file, "[STARS][SAVE]: " fmt "\n", ##__VA_ARGS__); \
 	} 																	\
 	else { 																\
-		fprintf(stderr, "[NVSHARE][SAVE] error: " fmt "\n", ##__VA_ARGS__); \
+		fprintf(stderr, "[STARS][SAVE] error: " fmt "\n", ##__VA_ARGS__); \
 	}																	    \
 } while (0)
 
@@ -105,9 +105,9 @@ do {                                                         \
 
 #define HEX_STR_LEN(x) (2 * sizeof(x) + 1)
 #define EPOLL_MAX_EVENTS 32
-#define NVSHARE_UNREGISTERED_ID 0xF00DF00DF00DF00D
+#define STARS_UNREGISTERED_ID 0xF00DF00DF00DF00D
 
-#define ENV_NVSHARE_DEBUG         "NVSHARE_DEBUG"
+#define ENV_STARS_DEBUG         "STARS_DEBUG"
 
 #define ENV_CLIENT_DIR        "CLIENT_DIR"
 

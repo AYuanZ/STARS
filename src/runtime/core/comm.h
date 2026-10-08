@@ -17,8 +17,8 @@
  * Communication primitives header file.
  */
 
-#ifndef _NVSHARE_COMM_H_
-#define _NVSHARE_COMM_H_
+#ifndef _STARS_COMM_H_
+#define _STARS_COMM_H_
 
 #include <errno.h>
 #include <inttypes.h>
@@ -31,8 +31,8 @@
 #define UNIX_PATH_MAX sizeof(((struct sockaddr_un *)0)->sun_path)
 #endif
 
-/* Maximum length of nvshare socket path */
-#define NVSHARE_SOCK_PATH_MAX UNIX_PATH_MAX
+/* Maximum length of a STARS socket path */
+#define STARS_SOCK_PATH_MAX UNIX_PATH_MAX
 
 /*
  * A message's data segment must comfortably hold 16 HEX characters plus a
@@ -45,17 +45,17 @@
 #define MAX_SM_POOL_SIZE	  17
 #define MAX_BS_COUNT_INDEX    10
 
-#define NVSHARE_SOCK_DIR          "/tmp/nvshare/"
+#define STARS_SOCK_DIR          "/tmp/stars/"
 
 extern const char *message_type_string[];
-extern uint64_t nvshare_generate_id(void);
-extern int nvshare_get_scheduler_path(char *sock_path);
-extern int nvshare_bind_and_listen(int *lsock, const char *sock_path);
-extern int nvshare_connect(int *rsock, const char *rpath);
-extern int nvshare_accept(int lsock, int *rsock);
-extern ssize_t nvshare_send_noblock(int rsock, const void *msg_p, size_t count);
-extern ssize_t nvshare_receive_noblock(int rsock, void *msg_p, size_t count);
-extern int nvshare_receive_block(int rsock, void *msg_p, size_t count);
+extern uint64_t stars_generate_id(void);
+extern int stars_get_scheduler_path(char *sock_path);
+extern int stars_bind_and_listen(int *lsock, const char *sock_path);
+extern int stars_connect(int *rsock, const char *rpath);
+extern int stars_accept(int lsock, int *rsock);
+extern ssize_t stars_send_noblock(int rsock, const void *msg_p, size_t count);
+extern ssize_t stars_receive_noblock(int rsock, void *msg_p, size_t count);
+extern int stars_receive_block(int rsock, void *msg_p, size_t count);
 
 
 enum message_type {
@@ -139,4 +139,4 @@ struct reqmsg {
 
 
 
-#endif /* _NVSHARE_COMM_H_ */
+#endif /* _STARS_COMM_H_ */
