@@ -65,5 +65,10 @@ STARS/
     ├── profiling/    # Workload and GPU resource profiling
     ├── modeling/     # Performance and interference modeling
     ├── scheduler/    # SLO-aware scheduling and resource allocation
-    └── runtime/      # GPU sharing runtime and execution control
+    └── runtime/      # GPU sharing runtime and staged core source release
 ```
+
+The first runtime source snapshot is available in
+[`src/runtime/core/`](src/runtime/core/). It includes the CLI, communication
+primitives, common utilities, minimal CUDA definitions, and CUDA interception
+layer. The full build dependencies will be released incrementally.
