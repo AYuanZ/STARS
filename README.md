@@ -9,8 +9,7 @@ utilization while satisfying the latency requirements of heterogeneous
 inference tasks.
 
 > **Release status:** This repository is currently under active preparation.
-> We are releasing the documentation and artifact structure first. Source code
-> will be released incrementally.
+> We have updated the publicly available codebase to include the STARS implementation, CUDA interception components, interference predictor, scheduling algorithms, and baseline configurations. We will also provide detailed documentation of compiler versions, software dependencies, CUDA environment, model configurations and weight sources, along with profiling scripts, experimental configurations, raw data, and analysis scripts.
 
 ## Overview
 
