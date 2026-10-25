@@ -10,7 +10,7 @@ inference tasks.
 
 > **Release status:** The released code includes the STARS runtime, CUDA
 > interception, interference prediction, scheduling algorithms, six inference
-> workloads, and NV/MPSE baselines.
+> workloads.
 
 ## Build and run
 
