@@ -8,19 +8,8 @@ execution control, and runtime scheduling can be combined to improve GPU
 utilization while satisfying the latency requirements of heterogeneous
 inference tasks.
 
-> **Release status:** This repository is currently under active preparation.
-> We have updated the publicly available codebase to include the STARS
-> implementation, CUDA interception components, interference predictor,
-> scheduling algorithms, and baseline configurations. We will also provide
-> detailed documentation of compiler versions, software dependencies, CUDA
-> environment, model configurations and weight sources, along with profiling
-> scripts, experimental configurations, raw data, and analysis scripts.
->
-> This snapshot includes build instructions, a verified environment,
-> the six inference workloads (BERT, GPT-2, ResNet-50, ShuffleNet V2, VGG-16,
-> and ViT), and runnable NV/MPSE execution modes. Model scripts use generated
-> input tensors and pretrained checkpoints. Full experimental artifacts will
-> be released incrementally; execution checks do not reproduce paper results.
+> **Release status:** The core implementation and model workloads are available.
+> Additional experimental artifacts will be released incrementally.
 
 ## Build and run
 
