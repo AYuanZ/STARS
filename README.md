@@ -8,8 +8,9 @@ execution control, and runtime scheduling can be combined to improve GPU
 utilization while satisfying the latency requirements of heterogeneous
 inference tasks.
 
-> **Release status:** The core implementation and model workloads are available.
-> Additional experimental artifacts will be released incrementally.
+> **Release status:** The released code includes the STARS runtime, CUDA
+> interception, interference prediction, scheduling algorithms, six inference
+> workloads, and NV/MPSE baselines.
 
 ## Build and run
 
