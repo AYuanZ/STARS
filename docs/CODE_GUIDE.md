@@ -2,8 +2,14 @@
 
 ## Execution paths
 
-The repository contains two distinct entry points:
+The repository contains three execution paths:
 
+- `src/profiling/workloads/myt*.py` contains the six migrated inference model
+  workloads: BERT, GPT-2, ResNet-50, ShuffleNet V2, VGG-16, and ViT. Use
+  `scripts/run_model.sh` for their NV/MPSE execution modes. These scripts load
+  pretrained models and generate input tensors as in the original source.
+  Their [model guide](../src/profiling/workloads/README.md) documents checkpoint
+  selection, parameters, dependencies, and GPU validation.
 - `src/profiling/baseline.py` runs the independent NV/MPSE GPU checks. NV uses
   ordinary CUDA contexts; MPSE uses MPS contexts with an explicit SM-count
   affinity. The runner requires neither the STARS daemon nor its preload
@@ -12,8 +18,9 @@ The repository contains two distinct entry points:
 - `src/runtime/core/` and `src/scheduler/` implement the STARS research runtime.
   The interception library exchanges workload metadata with the scheduler and
   uses kernel profiles when choosing execution windows and SM allocations.
-  Full inference integration requires the original application-side metadata,
-  compatible profiles, and MPS. See [RUNNING.md](RUNNING.md) for setup details.
+  The migrated `Our` branches retain application-side metadata transfers;
+  full STARS execution still requires compatible profiles and MPS. See
+  [RUNNING.md](RUNNING.md) for setup details.
 
 NV means native CUDA execution in the supplied configurations. MPSE means the
 fixed-SM MPS baseline. Neither name selects one of the temporal scheduler

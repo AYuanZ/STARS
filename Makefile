@@ -15,7 +15,7 @@ LIB_SRC := $(CORE)/hook.c $(CORE)/client.c src/profiling/cinfo.c src/modeling/lr
 LIB_OBJ := $(addprefix $(BUILD)/,$(LIB_SRC:.c=.o))
 HARDEN := -Wl,-z,defs -Wl,-z,relro -Wl,-z,now
 
-.PHONY: all clean check schedulers FORCE
+.PHONY: all clean check check-workloads schedulers FORCE
 all: $(BUILD)/libstars.so $(BUILD)/stars-scheduler $(BUILD)/starsctl
 
 $(BUILD)/%.o: %.c
@@ -40,6 +40,10 @@ schedulers:
 
 check: all
 	python3 tests/check_host.py
+	python3 tests/check_workloads.py
+
+check-workloads:
+	python3 tests/check_workloads.py
 
 clean:
 	$(RM) -r $(BUILD)

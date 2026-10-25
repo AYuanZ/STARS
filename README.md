@@ -16,10 +16,11 @@ inference tasks.
 > environment, model configurations and weight sources, along with profiling
 > scripts, experimental configurations, raw data, and analysis scripts.
 >
-> This snapshot includes build instructions, a verified environment, and
-> runnable NV/MPSE configurations. The included GPU examples are synthetic
-> execution checks, not a reproduction of the inference results. The remaining
-> experimental artifacts will be released incrementally.
+> This snapshot includes build instructions, a verified environment,
+> the six inference workloads (BERT, GPT-2, ResNet-50, ShuffleNet V2, VGG-16,
+> and ViT), and runnable NV/MPSE execution modes. Model scripts use generated
+> input tensors and pretrained checkpoints. Full experimental artifacts will
+> be released incrementally; execution checks do not reproduce paper results.
 
 ## Build and run
 
@@ -35,19 +36,34 @@ The artifacts are `build/libstars.so`, `build/stars-scheduler`, and
 `build/starsctl`. The host build does not require a CUDA toolkit. `make check`
 checks scheduler/CLI communication and configuration handling without a GPU.
 
-Run the native CUDA and fixed-SM MPS baselines on a machine with a working
-NVIDIA driver; MPSE also needs `nvidia-cuda-mps-control` on `PATH`:
+The six model scripts are in [`src/profiling/workloads/`](src/profiling/workloads/):
+[`mytbert.py`](src/profiling/workloads/mytbert.py),
+[`mytgpt.py`](src/profiling/workloads/mytgpt.py),
+[`mytresnet.py`](src/profiling/workloads/mytresnet.py),
+[`mytshufflenet.py`](src/profiling/workloads/mytshufflenet.py),
+[`mytvgg.py`](src/profiling/workloads/mytvgg.py), and
+[`mytvit.py`](src/profiling/workloads/mytvit.py).
+NV and MPSE select how these models execute; they are not model names.
+
+With CUDA-enabled PyTorch and the [model dependencies](src/profiling/workloads/requirements.txt)
+installed, run actual inference in native CUDA or fixed-SM MPS mode:
 
 ```bash
-python3 src/profiling/baseline.py --config configs/NV.json
-python3 src/profiling/baseline.py --config configs/MPSE.json
+PYTHON=python bash scripts/run_model.sh resnet NV --slo-ms 100 -q 10
+PYTHON=python bash scripts/run_model.sh resnet MPSE --slo-ms 100 -sm 6 -q 10
 ```
 
-Each command launches two clients, checks GPU results, and writes per-client
-latency CSVs under a new `results/` directory. MPSE creates and shuts down its
-own isolated MPS controller. Change `sm_count` in `configs/MPSE.json` to adjust
-the requested SM limit; the CSV records the effective limit reported by CUDA.
-Neither baseline needs model weights, PyTorch, the STARS daemon, or `LD_PRELOAD`.
+Replace `resnet` with `bert`, `gpt`, `shufflenet`, `vgg`, or `vit` to run the
+other models. Default pretrained weights use framework caches and may download
+missing files; pass `--model-path` to use a local checkpoint. The fixed 100 ms
+SLO above is an example deadline. Use `--latency-csv` for profile-based SLOs.
+MPSE also requires `nvidia-cuda-mps-control` on `PATH`; the launcher manages
+an isolated controller. See the [model run guide](src/profiling/workloads/README.md)
+for input shapes, weight selection, original research branches, and validation.
+
+The separate `src/profiling/baseline.py` and `configs/NV.json` / `MPSE.json`
+remain available as optional vector-add checks of the CUDA/MPS environment.
+They do not run any of the six inference models.
 
 See [the run guide](docs/RUNNING.md) for requirements, source mapping, runtime
 integration, and the scope of the validation performed on this snapshot.
@@ -105,6 +121,7 @@ STARS/
 ├── Makefile          # Complete host build and checks
 ├── configs/          # Example model, hardware, and scenario configurations
 ├── docs/             # Run guide and release provenance
+├── scripts/          # Actual-model launchers
 ├── tests/            # Host integration checks
 └── src/              # STARS implementation
     ├── profiling/    # Workload and GPU resource profiling

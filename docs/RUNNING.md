@@ -1,5 +1,11 @@
 # Building and running this snapshot
 
+For the six actual inference models, start with the
+[model workload guide](../src/profiling/workloads/README.md).
+BERT, GPT-2, ResNet-50, ShuffleNet V2, VGG-16, and ViT are provided under
+`src/profiling/workloads/`; NV and MPSE are their execution modes.
+The vector-add checks below remain useful for checking the CUDA/MPS environment.
+
 ## Requirements and verified environment
 
 The runtime builds on Linux with a GNU C99 compiler, GNU Make, glibc, libdl,
@@ -60,8 +66,10 @@ so those do not alter the chosen baseline. `CUDA_VISIBLE_DEVICES` is preserved;
 The baseline workload is intentionally independent of model checkpoints,
 datasets, the original external JSON barrier, and hardcoded home directories.
 It validates the same native-context / fixed-SM-context distinction used by
-the original NV/MPSE inference functions. Full ResNet/BERT/GPT/etc. experiments,
-their weight provenance, and original experiment datasets are not included.
+the original NV/MPSE inference functions. The actual model scripts are now
+available separately in `src/profiling/workloads/`, with dependency and
+checkpoint-loading documentation. Original checkpoint binaries, complete
+experiment datasets, and exact checkpoint revisions are not included.
 
 ## STARS runtime and schedulers
 
