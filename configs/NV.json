@@ -1,0 +1,11 @@
+{
+  "mode": "NV",
+  "device": 0,
+  "clients": 2,
+  "sm_count": 6,
+  "elements": 1048576,
+  "iterations": 50,
+  "warmup": 5,
+  "launches_per_query": 10,
+  "timeout_seconds": 120
+}

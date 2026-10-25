@@ -1,33 +1,14 @@
-# Runtime Core
+# Runtime core
 
-This directory contains the first staged release of the STARS runtime core.
+The complete host build now produces `build/libstars.so`,
+`build/stars-scheduler`, and `build/starsctl` from the repository root.
+`make` and `make check` in this directory forward to the root Makefile.
 
-## Released components
+The runtime links the client, communication utilities, kernel-profile loader,
+regression code, and CUDA interception layer. It retains STARS symbol names;
+CUDA and NVML are resolved dynamically. The original copyright notices and
+third-party licenses remain in their source files.
 
-- `cli.c`: command-line control interface for the runtime scheduler.
-- `comm.c` and `comm.h`: Unix-domain socket communication primitives and
-  runtime message definitions.
-- `common.c` and `common.h`: shared logging, I/O, and utility functions.
-- `cuda_defs.h`: minimal CUDA Driver API and NVML declarations used by the
-  interception layer.
-- `hook.c`: CUDA call interception and MPS execution-control logic.
-- `Makefile`: validation and partial-build rules for this staged release.
-
-## Release scope
-
-This is a source snapshot, not yet a standalone runtime distribution. Some
-internal dependencies referenced by `cli.c`, `comm.h`, and `hook.c` are not
-part of this release. The Makefile therefore builds only the self-contained
-`common.o` module by default. The remaining build dependencies and complete
-runtime integration will be released incrementally.
-
-Set `STARS_LOG_PATH` to select the runtime log destination. If unset, the
-runtime uses `/tmp/stars-predict.log`.
-
-Run the available checks with:
-
-```bash
-make check
-```
-
-The released files retain their existing copyright and license notices.
+See [the run guide](../../../docs/RUNNING.md) for configuration and the limits
+of the validation. Set `STARS_LOG_PATH` to choose the runtime log destination;
+its default is `/tmp/stars-predict.log`.

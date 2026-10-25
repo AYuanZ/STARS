@@ -75,7 +75,7 @@ static int change_tq(int newtq)
 {
 	int rsock;
 	int ret;
-	struct message msg = {0};
+	struct reqmessage msg = {0};
 
 	msg.id = 0xBEEF;
 	msg.type = SET_TQ;
@@ -97,7 +97,7 @@ static int change_status(int status)
 {
 	int rsock;
 	int ret;
-	struct message msg = {0};
+	struct reqmessage msg = {0};
 
 	if (status == 1) msg.type = SCHED_ON;
 	else msg.type = SCHED_OFF;
@@ -119,7 +119,7 @@ int main(int argc, const char *argv[])
 	int status;
 	int actions_done = 0;
 	const char *opt_err = NULL;
-	SimpleConfig config;
+	SimpleConfig config = {0};
 	xoptContext *ctx;
 	const char **extras = NULL;
 
@@ -173,7 +173,7 @@ int main(int argc, const char *argv[])
 
 	/* help? */
 	if (config.help || (actions_done == 0)) {
-		xoptAutohelpOptions opts;
+		xoptAutohelpOptions opts = {0};
 		opts.usage = "[options]";
 		opts.prefix = "A command line utility to configure the STARS scheduler.";
 		opts.spacer = 10;

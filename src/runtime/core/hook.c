@@ -213,6 +213,7 @@ void init_csv(const char* outpath){
 	FILE *fp = fopen(outpath, "a"); // "w" -> Write Text
     if (!fp) {
         perror("Failed to open file for text writing");
+        return;
     }
 
     // Write the CSV header
@@ -230,6 +231,7 @@ void save_active_list_csv(const char* outpath, long long all_ksid_sm, int now_ks
 	FILE *fp = fopen(outpath, "a"); // "w" -> Write Text
     if (!fp) {
         perror("Failed to open file for text writing");
+        return;
     }
 	int result = fprintf(fp, "%s, %d, %d\n",
 		ksid_sm_str,
@@ -239,6 +241,7 @@ void save_active_list_csv(const char* outpath, long long all_ksid_sm, int now_ks
 	if (result < 0) {
 		fprintf(stderr, "Error writing record %d to CSV file.\n", records_written);
 		fclose(fp);
+		return;
 	}
 	records_written++;
 
@@ -530,9 +533,10 @@ static void initialize_libstars(void)
 
 	char *out_dir;
 	out_dir = getenv(ENV_OUT_DIR);
+	if (out_dir == NULL || out_dir[0] == '\0') out_dir = "/tmp/";
 	log_debug("[Hook]----ENV_OUT_DIR=%s", out_dir);
 
-	snprintf(outpath, sizeof(outpath), "%sksid_sm_dur_summary_%d.csv", out_dir, 6);
+	snprintf(outpath, sizeof(outpath), "%s/ksid_sm_dur_summary_%d.csv", out_dir, 6);
 
 	init_csv(outpath);
 
@@ -1431,7 +1435,7 @@ CUresult cuMemcpyHtoDAsync(CUdeviceptr dstDevice, const void* srcHost,
 		if(task_slo == 1){
 			true_or_exit(clock_gettime(CLOCK_REALTIME, &task_start_time) == 0);
 		}
-		log_debug("after cuMemcpyHtoDAsync task_slo=%f", task_slo);
+		log_debug("after cuMemcpyHtoDAsync task_slo=%d", task_slo);
 
 	}
 

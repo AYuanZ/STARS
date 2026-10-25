@@ -43,9 +43,10 @@
 #define POD_NAME_LEN_MAX      254
 #define POD_NAMESPACE_LEN_MAX 254
 #define MAX_SM_POOL_SIZE	  17
-#define MAX_BS_COUNT_INDEX    10
+#define MAX_BS_COUNT_INDEX    17
 
-#define STARS_SOCK_DIR          "/tmp/stars/"
+const char *stars_socket_dir(void);
+#define STARS_SOCK_DIR          stars_socket_dir()
 
 extern const char *message_type_string[];
 extern uint64_t stars_generate_id(void);

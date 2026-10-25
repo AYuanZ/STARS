@@ -71,20 +71,21 @@ uint64_t stars_generate_id(void) {
 
 
 /* Stores the path to the STARS scheduler socket in sock_path. */
+const char *stars_socket_dir(void)
+{
+    const char *path = getenv("STARS_SOCKET_DIR");
+    return path && path[0] ? path : "/tmp/stars";
+}
+
 int stars_get_scheduler_path(char *sock_path)
 {
-	int offset;
-	size_t ret;
-
-	/* TODO: Ensure it fits in sock_path, check return value */
-	ret = strlcpy(sock_path, STARS_SOCK_DIR, STARS_SOCK_PATH_MAX);
-
-	offset = ret; /* Start from the trailing NULL byte */
-
-	/* TODO: Ensure it fits in sock_path, check return value */
-	ret = snprintf(sock_path + offset, STARS_SOCK_PATH_MAX - offset,
-			"%s", "scheduler.sock");
-	return 0;
+    int n = snprintf(sock_path, STARS_SOCK_PATH_MAX, "%s/scheduler.sock",
+                     STARS_SOCK_DIR);
+    if (n < 0 || n >= STARS_SOCK_PATH_MAX) {
+        errno = ENAMETOOLONG;
+        return -1;
+    }
+    return 0;
 }
 
 

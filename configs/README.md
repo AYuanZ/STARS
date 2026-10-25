@@ -1,7 +1,26 @@
-# Configurations
+# Baseline configurations
 
-This directory contains example configurations used by STARS experiments,
-including model, hardware, and workload-scenario settings.
+`NV.json` runs two ordinary CUDA clients. `MPSE.json` runs two MPS clients,
+each requesting a six-SM context. Run either using:
 
-Configuration schemas and runnable examples will be added as the
-implementation is released.
+```bash
+python3 src/profiling/baseline.py --config configs/MPSE.json
+```
+
+Commands are relative to the repository root. `--dry-run` validates a config
+without GPU access. Fields:
+
+| Field | Meaning |
+| --- | --- |
+| `mode` | `NV` or `MPSE` |
+| `device` | Visible CUDA device ordinal |
+| `clients` | Number of concurrent worker processes |
+| `sm_count` | SM count per MPSE context; ignored for NV |
+| `elements` | Number of float elements in each vector |
+| `iterations` | Measured queries per client |
+| `warmup` | Warmup queries before the shared start barrier |
+| `launches_per_query` | Kernel launches followed by one context synchronization |
+| `timeout_seconds` | Deadline covering client warmup and measurement |
+
+This snapshot includes synthetic execution configurations. Full model and
+experiment configurations are still pending; see [the run guide](../docs/RUNNING.md).

@@ -1,0 +1,33 @@
+// Minimal synthetic workload for NV/MPSE execution checks; no model weights.
+.version 6.0
+.target sm_50
+.address_size 64
+.visible .entry vector_add(
+    .param .u64 a, .param .u64 b, .param .u64 c, .param .u32 n
+)
+{
+    .reg .pred %p;
+    .reg .b32 %r<5>;
+    .reg .b64 %rd<8>;
+    .reg .f32 %f<4>;
+    ld.param.u64 %rd1, [a];
+    ld.param.u64 %rd2, [b];
+    ld.param.u64 %rd3, [c];
+    ld.param.u32 %r4, [n];
+    mov.u32 %r1, %ctaid.x;
+    mov.u32 %r2, %ntid.x;
+    mov.u32 %r3, %tid.x;
+    mad.lo.u32 %r1, %r1, %r2, %r3;
+    setp.ge.u32 %p, %r1, %r4;
+    @%p bra DONE;
+    mul.wide.u32 %rd4, %r1, 4;
+    add.u64 %rd5, %rd1, %rd4;
+    add.u64 %rd6, %rd2, %rd4;
+    add.u64 %rd7, %rd3, %rd4;
+    ld.global.f32 %f1, [%rd5];
+    ld.global.f32 %f2, [%rd6];
+    add.f32 %f3, %f1, %f2;
+    st.global.f32 [%rd7], %f3;
+DONE:
+    ret;
+}

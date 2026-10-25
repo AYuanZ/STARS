@@ -1,10 +1,9 @@
-# STARS Source Code
+# STARS source code
 
-The STARS implementation is organized into four components:
+- `runtime/core/`: CUDA interception, client protocol, CLI, and utilities.
+- `profiling/`: kernel-profile CSV loading and independent NV/MPSE execution checks.
+- `modeling/`: linear regression and the scheduler's empirical interference model.
+- `scheduler/`: STARS and FIFO/EDF/EDF-noP/SJF/SRTF scheduling algorithms.
 
-- `profiling/`: workload and GPU resource profiling.
-- `modeling/`: performance and interference modeling.
-- `scheduler/`: SLO-aware scheduling and resource allocation.
-- `runtime/`: GPU sharing runtime and execution control.
-
-Source code will be released incrementally.
+Build with `make` at the repository root. See [the run guide](../docs/RUNNING.md)
+for dependencies, source provenance, and validation scope.
