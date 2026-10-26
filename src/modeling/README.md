@@ -9,3 +9,8 @@ runtime. These coefficients have not been refitted for new hardware.
 The original `predict.c` always returned 1.0; that placeholder is deliberately
 excluded. Full training data and offline fitting scripts are not part of this
 snapshot. See [the run guide](../../docs/RUNNING.md).
+
+Archived raw colocated-task duration captures are published in
+[`data/interference/`](../../data/interference/), with source paths, checksums,
+and notes on repeated headers and identifier encoding. The six models' kernel
+profiles are available in [`data/profiling/`](../../data/profiling/).

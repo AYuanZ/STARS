@@ -10,7 +10,7 @@ inference tasks.
 
 > **Release status:** The released code includes the STARS runtime, CUDA
 > interception, interference prediction, scheduling algorithms, six inference
-> workloads.
+> workloads, and profiling data.
 
 ## Build and run
 
@@ -54,6 +54,12 @@ for input shapes, weight selection, original research branches, and validation.
 The separate `src/profiling/baseline.py` and `configs/NV.json` / `MPSE.json`
 remain available as optional vector-add checks of the CUDA/MPS environment.
 They do not run any of the six inference models.
+
+Archived profiling data for all six models is available in
+[`data/profiling/`](data/profiling/), including raw profiler exports, latency
+tables, resource monitors, derived KS profiles, and checksums.
+Additional raw interference-duration captures are in
+[`data/interference/`](data/interference/).
 
 See [the run guide](docs/RUNNING.md) for requirements, source mapping, runtime
 integration, and the scope of the validation performed on this snapshot.
@@ -110,6 +116,7 @@ Scheduling and Resource Allocation
 STARS/
 ├── Makefile          # Complete host build and checks
 ├── configs/          # Example model, hardware, and scenario configurations
+├── data/profiling/   # Archived measurements, derived profiles, and provenance
 ├── docs/             # Run guide and release provenance
 ├── scripts/          # Actual-model launchers
 ├── tests/            # Host integration checks

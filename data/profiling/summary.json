@@ -1,0 +1,93 @@
+{
+  "source_tree": "Exp/Profiling",
+  "models": [
+    "bert",
+    "gpt",
+    "resnet",
+    "shufflenet",
+    "vgg",
+    "vit"
+  ],
+  "csv_files": 2852,
+  "source_bytes": 2903891196,
+  "stored_bytes": 271281321,
+  "files_by_model_and_category": {
+    "bert": {
+      "joined_kernel_profile": 130,
+      "kernel_segment_index": 5,
+      "ncu_console_export": 5,
+      "ncu_raw_metrics": 5,
+      "nsys_kernel_trace": 130,
+      "partitioned_kernel_profile": 90,
+      "processed_ncu_metrics": 15,
+      "resource_monitor": 2,
+      "runtime_ks_summary": 90,
+      "standalone_latency": 5
+    },
+    "gpt": {
+      "joined_kernel_profile": 130,
+      "kernel_segment_index": 5,
+      "ncu_console_export": 5,
+      "ncu_raw_metrics": 5,
+      "nsys_kernel_trace": 130,
+      "partitioned_kernel_profile": 90,
+      "processed_ncu_metrics": 15,
+      "resource_monitor": 1,
+      "runtime_ks_summary": 90,
+      "standalone_latency": 5
+    },
+    "resnet": {
+      "joined_kernel_profile": 130,
+      "kernel_segment_index": 5,
+      "ncu_console_export": 5,
+      "ncu_raw_metrics": 5,
+      "nsys_kernel_trace": 130,
+      "partitioned_kernel_profile": 90,
+      "processed_ncu_metrics": 15,
+      "resource_monitor": 1,
+      "runtime_ks_summary": 90,
+      "standalone_latency": 5
+    },
+    "shufflenet": {
+      "joined_kernel_profile": 130,
+      "kernel_segment_index": 5,
+      "ncu_console_export": 5,
+      "ncu_raw_metrics": 5,
+      "nsys_kernel_trace": 130,
+      "partitioned_kernel_profile": 90,
+      "processed_ncu_metrics": 15,
+      "resource_monitor": 1,
+      "runtime_ks_summary": 90,
+      "standalone_latency": 5
+    },
+    "vgg": {
+      "joined_kernel_profile": 130,
+      "kernel_segment_index": 5,
+      "ncu_console_export": 5,
+      "ncu_raw_metrics": 5,
+      "nsys_kernel_trace": 130,
+      "partitioned_kernel_profile": 90,
+      "processed_ncu_metrics": 15,
+      "resource_monitor": 1,
+      "runtime_ks_summary": 90,
+      "standalone_latency": 3
+    },
+    "vit": {
+      "joined_kernel_profile": 130,
+      "kernel_segment_index": 5,
+      "ncu_console_export": 5,
+      "ncu_raw_metrics": 5,
+      "nsys_kernel_trace": 130,
+      "partitioned_kernel_profile": 90,
+      "processed_ncu_metrics": 15,
+      "resource_monitor": 1,
+      "runtime_ks_summary": 90,
+      "standalone_latency": 2
+    }
+  },
+  "inventory_status_counts": {
+    "published": 2852,
+    "binary_report_database_or_plot_not_published": 1620,
+    "outside_six_model_scope": 742
+  }
+}

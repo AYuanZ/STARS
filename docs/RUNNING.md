@@ -116,7 +116,7 @@ just by preloading the library. Relevant variables:
 | `STARS_DEBUG` | Enables runtime debug logging when set |
 | `STARS_LOG_PATH` | Runtime file log; default `/tmp/stars-predict.log` |
 | `OUT_DIR` | Existing directory for interception CSVs; default `/tmp` |
-| `CLIENT_DIR` | Kernel-profile path prefix, with trailing slash |
+| `CLIENT_DIR` | Prefix before the batch number, e.g. `$PWD/data/profiling/resnet/ks_profiling_result_b` |
 | `STARS_W_SFR` | Temporal risk weight in [0,1]; default 0.7 |
 | `STARS_RISK_DELTA` | Risk deadband parameter in (0,1); default 0.2 |
 | `STARS_BETA_SCHED` | Spatial utility weight in [0,1]; default 0.5 |
@@ -130,6 +130,12 @@ expects `${CLIENT_DIR}${batch}/ks_part/ks_summary_sm_${sm}.csv` for batches
 ```text
 ks_id,kernel_num,duration_ns,sm_usage,dram_demand,l2_demand,now_duration_ns,solo_duration_ns
 ```
+
+The archived export uses `num_kernels` and `avg_*_throughput` header names for
+the corresponding positions. Published, directly loadable tables are in
+[`data/profiling/`](../data/profiling/); their README documents the original
+field semantics and byte-level provenance. The path prefix above deliberately
+ends in `_b` because the loader appends the batch number itself.
 
 The predictor coefficients and several resource assumptions remain those of
 the research snapshot; recalibrate before interpreting results on different

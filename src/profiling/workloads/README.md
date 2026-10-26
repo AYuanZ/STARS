@@ -99,6 +99,12 @@ batch/SM combination is an error. In NV mode this argument is a profile lookup
 key and CSV label, not an enforced GPU allocation. For MPSE, actual affinity
 is queried and recorded separately in the metadata; hardware may round it.
 
+Archived tables for all six models are included under
+[`data/profiling/`](../../../data/profiling/). For example, use
+`--latency-csv data/profiling/resnet/all_result/resnet.csv` from the repository
+root. The dataset README describes repeated measurements, historical settings,
+and the limits of matching archived profiles to current workload defaults.
+
 `--batch-mode fixed1` preserves the source helper's default batch size of 1.
 `--batch-mode fixed` uses `-b`; `--batch-mode paper` preserves the original
 weighted distribution (GPT-2 uses 1/2/4/8; the other models use 1/2/4/8/16).

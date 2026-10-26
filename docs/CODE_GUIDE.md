@@ -42,8 +42,10 @@ executables built by `make schedulers`.
 The profile loader in `src/profiling/cinfo.c` encodes its lookup key as
 `ks_id * 10000 + smcount * 100 + bs`. The SM and batch fields each occupy two
 decimal digits. This is an inherited representation; configurations must
-respect its limits. `now_duration_ns` stores ideal cumulative progress through
-the current segment, and `solo_duration_ns` stores standalone request duration.
+respect its limits. In the published KS exports, `now_duration_ns` repeats the
+profile's total segment duration and `solo_duration_ns` stores cumulative
+duration through the current segment. The legacy names are unchanged; see
+[the dataset guide](../data/profiling/README.md) for verified field semantics.
 Fields ending in `_ns` are in nanoseconds, while scheduler timestamps and SLO
 progress calculations use milliseconds. Preserve explicit unit conversions.
 
@@ -93,5 +95,6 @@ targets, and host integration checks cover the default daemon's control
 protocol. The successful NV/MPSE GPU checks documented in
 [RUNNING.md](RUNNING.md) do not establish end-to-end inference correctness or
 reproduce the paper's performance results. Original model weights, complete
-profiling pipelines, experiment datasets, and analysis scripts remain outside
-this source release.
+profiling pipelines, full experiment datasets, and analysis scripts remain
+outside this source release. Archived profiling CSVs and derived KS tables are
+now available in [`data/profiling/`](../data/profiling/).

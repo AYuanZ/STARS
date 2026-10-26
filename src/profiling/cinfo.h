@@ -16,8 +16,8 @@ typedef struct {
     double sm_usage;
     double dram_demand;
     double l2_demand;
-    int now_duration_ns; // Ideal cumulative duration through the current kernel segment
-    int solo_duration_ns; // Standalone duration of the current request
+    int now_duration_ns; // Archived export: total segment duration for this profile
+    int solo_duration_ns; // Archived export: cumulative duration through this segment
 } KernelInfo;
 
 // Hash-table node containing a record and a link to the next node
