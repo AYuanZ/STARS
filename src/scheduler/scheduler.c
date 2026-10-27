@@ -219,27 +219,10 @@ double shape_value(double value, double danger_threshold, double safe_threshold)
 static int scheduler(Actask *now_task, int allks_num, double submit_time, int task_slo, int is_alone) {
 	L_aggressive = allks_num / 5;
 	if (L_aggressive < L_base) L_aggressive = L_base;
-
-	// log_info("[Scheduler]---------------214--Entering scheduling policy");
 	int ksid = (now_task->ks.ks_id) / 10000;
-
-	log_info("[Scheduler]---------------217-------ksid--%d----allks==%d", ksid, allks_num);
-
 	double true_progress = ksid * 1.0 / allks_num;
-
-	// log_info("[Scheduler]---------------221---%f", true_progress);
-
-	// double true_progress = (get_current_time_ms() - submit_time) * 1000000.0 / (now_task->ks.now_duration_ns);
-
-	// double expected_progress = (now_task->ks.solo_duration_ns) * 1.0 / (now_task->ks.now_duration_ns);
-
 	double expected_progress = (get_current_time_ms() - submit_time) * 1000000.0 / (now_task->ks.solo_duration_ns);
-
-	log_debug("[Scheduler]---------------224---%d----------%d---------------%f", now_task->ks.solo_duration_ns, now_task->ks.now_duration_ns, expected_progress);
-
 	double slo_progress = (get_current_time_ms() - submit_time) / (task_slo);
-
-	log_info("[Scheduler]---------------226---%f-------%f---------%d-000000---slo_progress%f------true_progress%f", get_current_time_ms(), submit_time, task_slo, slo_progress, true_progress);
 
 	// SLO progress ratio: actual progress divided by elapsed SLO fraction
 	// Compare completed work with the fraction of the latency budget already consumed
@@ -249,9 +232,6 @@ static int scheduler(Actask *now_task, int allks_num, double submit_time, int ta
 	// Aggregate task urgency and return it to the client for spatial allocation decisions.
 	// A task behind its SLO progress has higher scheduling pressure; combine this with colocated-task urgency when selecting SMs.
 	now_task->urgent_level = SFR * (7 / now_task->ks.dram_demand + 3 / now_task->ks.l2_demand);
-
-	log_info("[Scheduler]---------------234--------SFR=%f-----------Urgent%f", SFR,now_task->urgent_level);
-
 
 	// Progress ratio: actual progress divided by expected standalone progress
     // Estimate the severity of interference experienced by the task
@@ -263,7 +243,6 @@ static int scheduler(Actask *now_task, int allks_num, double submit_time, int ta
 	double risk_safe = 1.0 + risk_delta;
 	if (SFR < risk_danger) KS_L = L_aggressive; // Use the aggressive segment window when the progress ratio is low
 	if (is_alone) return  KS_L = L_aggressive; // Use the aggressive segment window when running alone
-
 
 	// 1. Compute the health score
     double F_sfr = shape_value(SFR, risk_danger, risk_safe);
@@ -281,17 +260,6 @@ static int scheduler(Actask *now_task, int allks_num, double submit_time, int ta
 	log_debug("[Scheduler][RiskControl] W_sfr=%.3f W_prr=%.3f SFR=%.6f PRR=%.6f L_star=%d",
 		W_sfr, 1.0 - W_sfr, SFR, PRR, L_star);
 
-
-	// int KS_L = L_aggressive;
-	// char *env_value = getenv(KSL);
-	// int ksl = atoi(env_value);  // Convert the environment value to an integer
-
-	// log_debug("[Scheduler]--274--------Selected window length KSL=%d", ksl);
-	// KS_L = ksl;
-
-	// log_debug("[Scheduler]----------Selected window length KSL=%d",KS_L);
-	// KS_L = L_aggressive;
-
 	/* Return the risk-adaptive value computed above. */
 	return L_star;
 }
@@ -306,46 +274,18 @@ static int scheduler(Actask *now_task, int allks_num, double submit_time, int ta
 int schedulerp(Actask *now_task, double predict_duration_part, double con_urgentlevel, int smcount,
 	int con_allsmcount, double con_all_throughput, int bs, const int SM_POOL[], int g_sm_pool_count, int solo_duration_ns[], int exp_sm, int all_ksnum)
 {
-	// TODO: Return multiple kernel-segment identifiers
 	int best_sm = SM_POOL[0];
 	double max_efficiency_score = -1.0;
-
-	// TODO: Compute the current task's elapsed time
 	double spent_time= get_current_time_ms() - now_task->submit_time;
-	log_debug("[Scheduler]--290---------Task elapsed: %.2f ms,---current time %.2f---------submission time %.2f", spent_time,  get_current_time_ms(), now_task->submit_time);
-
-
-	// TODO: Compare colocated-task urgency before allowing more interference, then adjust for the current task's urgency.
 	double true_progress = (now_task->ks.ks_id) / 10000 / all_ksnum;
 	double slo_progress = spent_time / now_task->slo;
 
-
 	// Standalone durations for different SM allocations
-	// TODO: Replace this with a dynamic lookup
 	int solo_dur_ns =  solo_duration_ns[g_sm_pool_count];
-	log_debug("[Scheduler]--308---------Task standalone duration: %d ns, -----SM%d-------BS%d", solo_dur_ns, exp_sm, bs);
-
 
 	double max_predicted_duration = predict_sm_duration(exp_sm, SM_POOL[g_sm_pool_count -1], now_task->ks.duration_ns);
 
-	char *env_value1 = getenv(SH);
-	int sh_value1 = atoi(env_value1);  // Convert the environment value to an integer
-
-	if (sh_value1 == 1){
-		max_predicted_duration = solo_duration_ns[g_sm_pool_count-1] * (1.3 + 0.1 * (SM_POOL[g_sm_pool_count-1] / 4)) * ((con_allsmcount + 26 / 26) * 0.2);
-	}
-	else if(sh_value1 == 2){
-		max_predicted_duration = solo_duration_ns[g_sm_pool_count-1] * (2.5 + 0.5 * (SM_POOL[g_sm_pool_count-1] / 4)) * ((con_allsmcount + (SM_POOL[g_sm_pool_count-1]) / 26) * 0.2);
-	}
-	else if (sh_value1 == 3){
-		max_predicted_duration = solo_duration_ns[g_sm_pool_count-1] * (1.3 + 0.1 * (SM_POOL[g_sm_pool_count-1] / 4)) * ((con_allsmcount + (SM_POOL[g_sm_pool_count-1]) / 26) * 0.2);;
-	}else{
-		max_predicted_duration = solo_duration_ns[g_sm_pool_count-1] * (1.5);
-		log_warn("[Client]--256---------Workload selector S is unset or invalid; using the default prediction model");
-	}
-
 	// 1. Predict the duration for each candidate partition
-	// TODO: Obtain profile data for each candidate partition
 	for(int i=0; i<(g_sm_pool_count-1); i++){
 
 		int sm_candidate = SM_POOL[i]; // Candidate SM count
@@ -357,19 +297,6 @@ int schedulerp(Actask *now_task, double predict_duration_part, double con_urgent
 		double predicted_duration = 0.0;
 		char *env_value = getenv(SH);
 		int sh_value = atoi(env_value);  // Convert the environment value to an integer
-
-		if (sh_value == 1){
-			predicted_duration = duration_ns * ((1.3 + 0.1 * (sm_candidate / 4)) * ((con_allsmcount + sm_candidate) / 26) * 0.2);
-		}
-		else if(sh_value == 2){
-			predicted_duration = duration_ns * ((2.5 + 0.5 * (sm_candidate / 4)) * ((con_allsmcount + sm_candidate) / 26) * 0.2);
-		}
-		else if (sh_value == 3){
-			predicted_duration = duration_ns * ((1.3 + 0.1 * (sm_candidate / 4)) * ((con_allsmcount + sm_candidate) / 26) * 0.2);;
-		}else{
-			predicted_duration = duration_ns * (1.5);
-			log_warn("[Client]--256---------Workload selector S is unset or invalid; using the default prediction model");
-		}
 
 
 		// Define the penalty term
@@ -385,20 +312,11 @@ int schedulerp(Actask *now_task, double predict_duration_part, double con_urgent
 		// Legacy score interpretation: throughput contribution divided by performance loss
 		double efficiency_score = 0.5 * throughput_contribution  + 0.5 * latency_inflation - penalty;
 
-
-		// log_debug("[Client]-250----Candidate SMs: %d, measured duration%d, predicted duration: %f ns, throughput contribution: %f, penalty: %f, efficiency score: %f",
 		// 	sm_candidate, duration_ns, predicted_duration, throughput_contribution, penalty, efficiency_score);
-
 		if(efficiency_score > max_efficiency_score){
             max_efficiency_score = efficiency_score;
             best_sm = sm_candidate;
 		}
-
-		log_debug("[Client]-250----Candidate SMs: %d, measured duration%d, predicted duration: %f ns, throughput contribution: %f, penalty: %f, efficiency score: %f, selected SMs: %d",
-			sm_candidate, duration_ns, predicted_duration, throughput_contribution, penalty, efficiency_score, best_sm);
-
-		// log_info("[Client]-----Efficiency score with %d SMs: %.4f", sm_candidate, efficiency_score);
-
 	}
 
 
@@ -423,14 +341,11 @@ static double insert_actask(Actask in_actask, double *ur_level, int *allsmcount,
 {
 	// Assume the result buffer has sufficient space
 	// A 256-byte buffer holds roughly 60 four-character task entries plus separators
-	// char result_string[256] = {0}; // Initialize an empty string
 
 	// Temporary buffer for formatting one task entry
 	char task_buffer[10];
 	Actask con_tasks = {0};
 
-	// log_debug("[SCHEDULER]----Current active tasks CLIENT ID: %lld smcount-----%d, ks_id--------%d",
-		// in_actask.client->id,in_actask.smcount, in_actask.ks.ks_id);
 	true_or_exit(pthread_mutex_lock(&insert_mutex) == 0);
 	int ksid_sm = 0;
 	int found = 0;
@@ -449,8 +364,6 @@ static double insert_actask(Actask in_actask, double *ur_level, int *allsmcount,
 				// Replace the entry for an existing client
 				active_task_list[i].ks = in_actask.ks;
 				active_task_list[i].smcount = in_actask.smcount;
-				// log_debug("[SCHEDULER]----Updating active task CLIENT ID: %lld smcount-----%d, ks_id--------%d, urgent_level-----%f",
-				// 	 active_task_list[i].client->id, active_task_list[i].smcount, active_task_list[i].ks.ks_id, active_task_list[i].urgent_level);
 				found = 1;
 				continue;
 			}
@@ -459,25 +372,13 @@ static double insert_actask(Actask in_actask, double *ur_level, int *allsmcount,
 				con_tasks.ks.dram_demand += active_task_list[i].ks.dram_demand;
 				con_tasks.ks.l2_demand += active_task_list[i].ks.l2_demand;
 				urgent += active_task_list[i].urgent_level;
-
-				// log_debug("[SCHEDULER]-322---Current active tasks CLIENT ID: %lld smcount-----%d, ks_id--------%d",
-				// 	 active_task_list[i].client->id, active_task_list[i].smcount, active_task_list[i].ks.ks_id);
-
-				 // Format each task as "SMIDKSID" with snprintf
-				// snprintf(task_buffer, sizeof(task_buffer), "%04d", active_task_list[i].ks.ks_id);
-				//  // Append to the result string
-                        // strcat(result_string, task_buffer);
-
 			}
 		}
 	}
-	// log_debug("[SCHEDULER]----Current active tasks: %s", result_string);
-
 
 	if (!found)
 	{
 		// Append an entry if no matching client was found
-		log_debug("No existing client found for ID %lu. Adding as a new task.\n", in_actask.client->id);
 		FIFO(in_actask, active_task_list, &active_task_count);
 	}
 
@@ -507,8 +408,6 @@ static void insert_actask_old(Actask in_actask, char *ksid_sm_str)
 	// Temporary buffer for formatting one task entry
 	char task_buffer[10];
 
-	log_debug("[SCHEDULER]----Current active tasks CLIENT ID: %lld smcount-----%d, ks_id--------%d",
-		in_actask.client->id,in_actask.smcount, in_actask.ks.ks_id);
 	true_or_exit(pthread_mutex_lock(&insert_mutex) == 0);
 	int ksid_sm = 0;
 	int found = 0;
@@ -525,19 +424,9 @@ static void insert_actask_old(Actask in_actask, char *ksid_sm_str)
 				found = 1;
 				continue;
 			}
-			else{
-				// log_debug("[SCHEDULER]----Current active tasks CLIENT ID: %lld smcount-----%d, ks_id--------%d",
-				// 	 active_task_list[i].client->id, active_task_list[i].smcount, active_task_list[i].ks.ks_id);
 
-				 // Format each task as "SMIDKSID" with snprintf
-				// snprintf(task_buffer, sizeof(task_buffer), "%04d", active_task_list[i].ks.ks_id);
-				//  // Append to the result string
-                        // strcat(result_string, task_buffer);
-			}
 		}
 	}
-	log_debug("[SCHEDULER]----Current active tasks: %s", result_string);
-
 
 	if (!found)
 	{
@@ -806,17 +695,6 @@ static int FIFO_schedule(Task new_task)
 }
 
 
-// void *DP_insert_task(void *arg __attribute__((unused))){
-// 	while (1)
-// 	{
-// 		true_or_exit(pthread_mutex_lock(&insert_mutex) == 0);
-// 		int ret = pthread_cond_wait(&insert_cv, &insert_mutex);
-// 		FIFO(*in_task, waiting_task_queue, &task_queue_size);
-// 		true_or_exit(pthread_mutex_unlock(&insert_mutex) == 0);
-// 	}
-// }
-
-
 
 
 /*
@@ -973,41 +851,16 @@ static void process_msg_v2(struct stars_client *client, const struct reqmessage 
 		// KernelInfo *ks = in_msg.ks;
 
 
-		// Insert the current kernel segment and return colocated-task information
-		double start_time = get_current_time_ms();
-
-		// int smcount = in_msg->smcount;
-		// int slo = in_msg->slo;
-		// double submit_time = in_msg->submit_time;
-		// // log_info("[Scheduler]---------------825--Before processing REQ_LOCK--smcount==%d, slo==%d, submit_time==%f",
-		// 	// smcount, slo, submit_time);
-		// int all_ks_num = in_msg->all_ks_num;
-
-		// Initialize the task
-		Actask actsk = {client, in_msg->ks, in_msg->smcount, in_msg->slo, in_msg->all_ks_num, in_msg->submit_time, 0.0};
-
-		// log_info("[Scheduler]---------------831--After processing REQ_LOCK--smcount==%d, slo==%d, submit_time==%f",
-		// 	actsk.smcount, actsk.slo, actsk.submit_time);
-
-		log_info("[Scheduler]---------------832--Before scheduling--all_ks_num==%d,-----------ks_id==%d, kernel_num==%d, duration_ns==%d, solo_duration_ns==%d",
-			in_msg->all_ks_num, in_msg->ks.ks_id, in_msg->ks.kernel_num, in_msg->ks.now_duration_ns, in_msg->ks.solo_duration_ns);
-
 		char signature[256];
 		double urgent_level = 0.0;
 		int allsmcount = 0;
 		double all_throughput = 0.0;
 
-		log_info("[Scheduler]---------------833--Before scheduling");
-
 		int KS_L = scheduler(&actsk, in_msg->all_ks_num, actsk.submit_time, actsk.slo, 0);
-		log_info("[Scheduler]---------------833--After scheduling--KS_L==%d", KS_L);
 
 
 		// Collect colocated-task information
 		double predict_duration_part = insert_actask(actsk, &urgent_level, &allsmcount, &all_throughput, signature);
-
-		log_info("[Scheduler]----1012-----Current task colocated urgency---------%f",  urgent_level);
-
 
 		int SM_POOL[MAX_SM_POOL_SIZE];
 		int solo_duratoin_ns[MAX_SM_POOL_SIZE];
@@ -1015,18 +868,6 @@ static void process_msg_v2(struct stars_client *client, const struct reqmessage 
 		memcpy(solo_duratoin_ns, in_msg->solo_duratoin_ns, sizeof(solo_duratoin_ns));
 		int g_sm_pool_count = in_msg->g_sm_pool_count;
 		int exp_sm = in_msg->exp_sm;
-
-
-		// int best_sm = schedulerp(&actsk, predict_duration_part, urgent_level, in_msg->smcount, allsmcount,
-		// 	all_throughput, (in_msg->ks.ks_id % 100), SM_POOL, g_sm_pool_count, solo_duratoin_ns, exp_sm, in_msg->all_ks_num);
-
-
-		log_info("[Scheduler]---------------840--After inserting active task--predict_duration_part==%f, urgent_level==%f, allsmcount==%d, all_throughput==%f",
-			predict_duration_part, urgent_level, allsmcount, all_throughput);
-
-		double end_time = get_current_time_ms();
-		log_info("[Scheduler]---------------844--Total REQ_LOCK processing time--%f ms",
-			end_time - start_time);
 
 		if (has_registered(client)) {
 			if (scheduler_on) {
