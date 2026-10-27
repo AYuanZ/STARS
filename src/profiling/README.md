@@ -8,8 +8,6 @@ Archived measurements and profiles are published under
 [`data/profiling/`](../../data/profiling/): all 2,852 CSV exports for the six
 models, with original latency tables, raw NCU/NSYS exports, monitor records,
 derived KS profiles, and checksums. See the dataset README for their formats.
-[`data/interference/`](../../data/interference/) also includes 12 raw
-colocated-task duration captures with source paths and integrity hashes.
 
 `cinfo.c` and `cinfo.h` load kernel-profile CSVs into the runtime's lookup table.
 `baseline.py` runs concurrent native CUDA (NV) or fixed-SM MPS (MPSE) contexts

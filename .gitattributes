@@ -1,4 +1,3 @@
 # Preserve archived profiling bytes, including the original CSV line endings.
 data/profiling/** -text
 data/profiling/**/*.gz binary
-data/interference/** -text

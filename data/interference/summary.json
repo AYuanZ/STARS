@@ -1,8 +1,0 @@
-{
-  "source_tree": "Myshare",
-  "csv_files": 12,
-  "physical_data_records": 228259,
-  "repeated_headers": 76,
-  "invalid_or_nonpositive_durations": 0,
-  "source_bytes": 5719470
-}

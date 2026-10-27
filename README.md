@@ -58,8 +58,6 @@ They do not run any of the six inference models.
 Archived profiling data for all six models is available in
 [`data/profiling/`](data/profiling/), including raw profiler exports, latency
 tables, resource monitors, derived KS profiles, and checksums.
-Additional raw interference-duration captures are in
-[`data/interference/`](data/interference/).
 
 See [the run guide](docs/RUNNING.md) for requirements, source mapping, runtime
 integration, and the scope of the validation performed on this snapshot.
