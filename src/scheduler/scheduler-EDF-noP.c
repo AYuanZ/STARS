@@ -605,16 +605,13 @@ static void process_msg_v2(struct stars_client *client, const struct reqmessage 
 		double lat_prmp = (processing_time > 20) ? 5 : (processing_time / 10);
 		double weight = (1.0 / slo);
 
-		log_debug("Current task SLO---------%f---------proc_time=%f", slo, processing_time);
 
 		// Initialize the task
 		Task new_task = {state, client, release_time, processing_time, slo, remain_slo, deadline, remaining_time, lat_prmp, weight};
 
-		log_debug("process_msg_v2 REQ_LOCK----------");
 		if (has_registered(client)) {
 			if (scheduler_on) {
 				int sch_cv = EDF_schedule(new_task);
-				log_debug("process_msg_v2 REQ_LOCK EDF_schedule---------====%d", sch_cv);
 				switch (sch_cv) {
 				case -1:
 					out_msg.type = LOCK_OK;
