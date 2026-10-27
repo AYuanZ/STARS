@@ -156,13 +156,3 @@ tensors. `Profiler.py` preserves the original timing behavior; `utils.py` and
 spreadsheet or image-loader dependencies. Errors loading weights now fail the
 process instead of returning a successful exit status.
 
-## Validation
-
-On 2026-10-25, all six model scripts ran successfully in both NV and MPSE modes
-on an RTX A2000 12GB with driver 550.107.02, using existing local pretrained
-checkpoints. Each of the 12 runs used batch size 1, `--warmup-batches 1`, two
-measured requests, and a fixed 100 ms SLO. Each produced two finite positive
-latency rows; all six MPSE runs reported six effective SMs after inference.
-This validates actual model execution, not inference accuracy or reproduction
-of the paper's latency/SLO results. `make check-workloads` checks CLI usability,
-profile lookup, CSV behavior, and synchronization without a GPU.
