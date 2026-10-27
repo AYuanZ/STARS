@@ -5,6 +5,3 @@ latency tables, resource monitors, and derived kernel-segment profiles for
 BERT, GPT-2, ResNet-50, ShuffleNet V2, VGG-16, and ViT.
 
 See the dataset README for file categories, coverage, checksums, and examples.
-
-[`interference/`](interference/) contains 12 additional raw colocated-task
-duration captures from the original interference-measurement directories.
