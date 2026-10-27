@@ -37,7 +37,6 @@ executables built by `make schedulers`.
 | `bs` | Inference batch size |
 | SLO | Per-request latency objective |
 | Colocated tasks | Tasks sharing the GPU at the same time |
-| TQ | Legacy scheduler time quantum |
 
 The profile loader in `src/profiling/cinfo.c` encodes its lookup key as
 `ks_id * 10000 + smcount * 100 + bs`. The SM and batch fields each occupy two
